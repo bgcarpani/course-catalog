@@ -8,6 +8,7 @@ import DefFooter from './Courses/components/DefFooter';
 import AddCourseModal from './Courses/components/AddCourseModal';
 import ProfessorsModal from './Courses/components/ProfessorsModal';
 import RoomsModal from './Courses/components/RoomsModal';
+import API_BASE_URL from './consts/apiurl';
 
 
 function App() {
@@ -16,7 +17,6 @@ function App() {
   const [isProfessorsModalOpen, setProfessorsModalOpen] = useState(false);
   const [isRoomModalOpen, setRoomModalOpen] = useState(false);
   const [selectedCourseForUpdate, setSelectedCourseForUpdate] = useState<Course | null>(null);  
-  const [isModalsClosed, setModalsClosed] = useState(false);
 
   const handleAddCourse = () => {
         setModalOpen(true);
@@ -35,18 +35,10 @@ function App() {
     setModalOpen(false);
     setProfessorsModalOpen(false);
     setRoomModalOpen(false);
-    setModalsClosed(true);
   };
 
-  useEffect(() => {
-    if (isModalsClosed) {
-      getCourses();
-    }
-  }, [isModalsClosed]);
-  
-
   const getCourses = async () => {
-    fetch('https://localhost:7002/api/Courses/GetCourses')
+    fetch(`${API_BASE_URL}/Courses/GetCourses`)
     .then((response) => response.json())
     .then((data) => setCourses(data))
     .catch((error) => console.error('Error fetching courses: ', error));
@@ -71,11 +63,16 @@ function App() {
           <Button type="button" onClick={handleAddCourse} variant="outlined" color='secondary'>
             Add new course
           </Button>
-          <AddCourseModal open={isModalOpen} onClose={handleCloseModal}/>
+          <AddCourseModal 
+            handleGetCourses={handleGetCourses}
+            open={isModalOpen} 
+            onClose={handleCloseModal}
+          />
           <Button type="button" onClick={handleAddProfessor} variant="outlined" color='warning' style={{margin: "1rem"}}>
             Add new Professor
           </Button>
           <ProfessorsModal
+            handleGetCourses={handleGetCourses}
             open={isProfessorsModalOpen}
             onClose={handleCloseModal}
           />
@@ -83,13 +80,15 @@ function App() {
             Add new Room
           </Button>
           <RoomsModal
+            handleGetCourses={handleGetCourses}
             open={isRoomModalOpen}
             onClose={handleCloseModal}
           />
       </div>
       <div className="grid">
-      <CourseGrid courses={courses} onUpdate={handleUpdateCourse} />
+      <CourseGrid courses={courses} onUpdate={handleUpdateCourse} handleGetCourses={handleGetCourses}/>
       <AddCourseModal
+        handleGetCourses={handleGetCourses}
         open={isModalOpen}
         onClose={handleCloseModal}
         selectedCourseForUpdate={selectedCourseForUpdate}

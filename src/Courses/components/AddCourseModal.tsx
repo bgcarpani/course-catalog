@@ -13,8 +13,9 @@ import {
 } from '@mui/material';
 import { Professor, Room } from '../types';
 import swal from 'sweetalert';
+import API_BASE_URL from '../../consts/apiurl';
 
-const AddCourseModal = ({ open, onClose, selectedCourseForUpdate }: any) => {
+const AddCourseModal = ({ handleGetCourses, open, onClose, selectedCourseForUpdate }: any) => {
     const [courseId, setCourseId] = useState('');
     const [courseName, setCourseName] = useState('');
     const [professorId, setProfessor] = useState(0);
@@ -23,6 +24,7 @@ const AddCourseModal = ({ open, onClose, selectedCourseForUpdate }: any) => {
     const [professorsList, setProfessorsList] = useState<Professor[]>([]);
     const [isSubmittable, setIsSubmittable] = useState<boolean>(false);
     const [isUpdate, setIsUpdate] = useState<boolean>(false);
+
     const [daysOfWeek, setDaysOfWeek] = useState<{
         monday: boolean;
         tuesday: boolean;
@@ -42,14 +44,14 @@ const AddCourseModal = ({ open, onClose, selectedCourseForUpdate }: any) => {
     });
     
     const getProfessors = async () => {
-        fetch('https://localhost:7002/api/Professors/GetProfessors')
+        fetch(`${API_BASE_URL}/Professors/GetProfessors`)
         .then((response) => response.json())
         .then((data) => setProfessorsList(data))
         .catch((error) => console.error('Error fetching courses: ', error));
     }
 
     const getRooms = async () => {
-        fetch('https://localhost:7002/api/Rooms/GetRooms')
+        fetch(`${API_BASE_URL}/Rooms/GetRooms`)
         .then((response) => response.json())
         .then((data) => setRoomsList(data))
         .catch((error) => console.error('Error fetching courses: ', error));
@@ -145,7 +147,7 @@ const AddCourseModal = ({ open, onClose, selectedCourseForUpdate }: any) => {
                 ...selectedDaysOfWeek,
             };
 
-            fetch('https://localhost:7002/api/Courses/CreateCourse', {
+            fetch(`${API_BASE_URL}/Courses/CreateCourse`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -159,6 +161,7 @@ const AddCourseModal = ({ open, onClose, selectedCourseForUpdate }: any) => {
                         text: "Course successfully created!",
                         icon: "success",
                     });
+                    handleGetCourses();
                 }
                 })
                 .catch((error) => {
@@ -177,7 +180,7 @@ const AddCourseModal = ({ open, onClose, selectedCourseForUpdate }: any) => {
                 ...selectedDaysOfWeek,
             };
 
-            fetch('https://localhost:7002/api/Courses/UpdateCourse', {
+            fetch(`${API_BASE_URL}/Courses/UpdateCourse`, {
                 method: 'PUT',
                 headers: {
                 'Content-Type': 'application/json',
@@ -191,6 +194,7 @@ const AddCourseModal = ({ open, onClose, selectedCourseForUpdate }: any) => {
                         text: "Course successfully updated!",
                         icon: "success",
                     });
+                    handleGetCourses();
                 }
                 })
                 .catch((error) => {
@@ -214,13 +218,17 @@ const AddCourseModal = ({ open, onClose, selectedCourseForUpdate }: any) => {
 
     const handleProfessorChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const selectedId = event.target.value as number;
-        setProfessor(selectedId);
+        if (professorsList.some((professor) => professor.professorId === selectedId)) {
+            setProfessor(selectedId);
+        }
     };
     
     const handleRoomChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const selectedId = event.target.value as number;
-        setRoom(selectedId);
-      };
+        if (roomsList.some((room) => room.roomId === selectedId)) {
+            setRoom(selectedId);
+        }
+    };
 
 return (
     <Dialog open={open} onClose={onClose}>

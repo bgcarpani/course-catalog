@@ -8,6 +8,7 @@ import {
     Grid,
 } from '@mui/material';
 import swal from 'sweetalert';
+import API_BASE_URL from '../../consts/apiurl';
 
 interface EmailModalProps {
     open: boolean;
@@ -27,7 +28,7 @@ const EmailModal: React.FC<EmailModalProps> = ({ open, onClose, professorEmail }
             message: message,
         };
 
-        fetch('https://localhost:7002/api/email', {
+        fetch(`${API_BASE_URL}/email`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

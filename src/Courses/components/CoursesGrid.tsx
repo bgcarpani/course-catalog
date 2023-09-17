@@ -6,13 +6,15 @@ import CourseDetailsModal from './CourseDetailsModal';
 import DeleteCourseModal from './DeleteCourseModal';
 import swal from 'sweetalert';
 import EmailModal from './EmailModal';
+import API_BASE_URL from '../../consts/apiurl';
 
 interface CourseGridProps {
     courses: Course[];
     onUpdate: (course: Course) => void;
+    handleGetCourses: () => void;
 }
 
-const CourseGrid: React.FC<CourseGridProps> = ({ courses, onUpdate }) => {
+const CourseGrid: React.FC<CourseGridProps> = ({ handleGetCourses, courses, onUpdate }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
     const [isDetailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -46,7 +48,7 @@ const CourseGrid: React.FC<CourseGridProps> = ({ courses, onUpdate }) => {
         if (selectedCourse) {
             const courseId = selectedCourse.courseId;
             
-            fetch(`https://localhost:7002/api/Courses/DeleteCourse?id=${courseId}`, {
+            fetch(`${API_BASE_URL}/Courses/DeleteCourse?id=${courseId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,6 +61,7 @@ const CourseGrid: React.FC<CourseGridProps> = ({ courses, onUpdate }) => {
                             text: "Course successfully deleted!",
                             icon: "success",
                         });
+                        handleGetCourses();
                     } else {
                         swal({
                             className: "secondary-font",
@@ -112,7 +115,7 @@ const CourseGrid: React.FC<CourseGridProps> = ({ courses, onUpdate }) => {
             },
         },
         { field: 'roomNumber', headerName: 'Room Number', width: 150 },
-        { field: 'empty', headerName: '', width: 500 },
+        { field: 'empty', headerName: '', width: 360 },
         {
             field: 'actions',
             headerName: 'Actions',
@@ -145,18 +148,18 @@ const CourseGrid: React.FC<CourseGridProps> = ({ courses, onUpdate }) => {
     }));
     
     return (
-        <Box sx={{ height: 400, width: '80%' }}>
+        <Box sx={{ height: 375, width: '90%' }}>
         <DataGrid
             rows={coursesRows}
             columns={columns}
             initialState={{
             pagination: {
                 paginationModel: {
-                pageSize: 5,
+                pageSize: 8,
                 },
             },
             }}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[8]}
             disableRowSelectionOnClick
         />
             <CourseDetailsModal

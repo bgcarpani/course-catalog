@@ -8,8 +8,9 @@ import {
     Grid,
 } from '@mui/material';
 import swal from 'sweetalert';
+import API_BASE_URL from '../../consts/apiurl';
 
-const ProfessorsModal = ({ open, onClose }: any) => {
+const ProfessorsModal = ({ handleGetCourses, open, onClose }: any) => {
     const [professorName, setProfessorName] = useState('');
     const [professorEmail, setProfessorEmail] = useState('');
 
@@ -22,7 +23,17 @@ const ProfessorsModal = ({ open, onClose }: any) => {
 
         const emailRegEx = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
-        if (!emailRegEx.test(professorEmail)) {
+        if (!professorName)
+        {
+            swal({
+                className: "secondary-font",
+                text: "Please insert the Professor's name.",
+                icon: "error",
+            });
+            return;
+        }
+
+        if (professorEmail && !emailRegEx.test(professorEmail)) {
             swal({
                 className: "secondary-font",
                 text: "Invalid email format.",
@@ -36,7 +47,7 @@ const ProfessorsModal = ({ open, onClose }: any) => {
             professorEmail,
         };
 
-        fetch('https://localhost:7002/api/Professors/CreateProfessor', {
+        fetch(`${API_BASE_URL}/Professors/CreateProfessor`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -50,12 +61,13 @@ const ProfessorsModal = ({ open, onClose }: any) => {
                         text: "Professor successfully created!",
                         icon: "success",
                     });
+                    handleGetCourses();
                 }
                 })
                 .catch((error) => {
                     swal({
                         className: "secondary-font",
-                        text: error,
+                        text: "Professor couldn't be created.",
                         icon: "error",
                     });
                 });

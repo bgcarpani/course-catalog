@@ -8,8 +8,9 @@ import {
     Grid,
 } from '@mui/material';
 import swal from 'sweetalert';
+import API_BASE_URL from '../../consts/apiurl';
 
-const RoomsModal = ({ open, onClose }: any) => {
+const RoomsModal = ({ open, onClose, handleGetCourses }: any) => {
     const [roomNumber, setRoomNumber] = useState('');
 
     const clearControls = () => {
@@ -17,7 +18,19 @@ const RoomsModal = ({ open, onClose }: any) => {
     };
 
     const handleSubmit = () => {
-        fetch(`https://localhost:7002/api/Rooms/CreateRoom?roomNumber=${roomNumber}`, {
+
+        
+        if (!roomNumber)
+        {
+            swal({
+                className: "secondary-font",
+                text: "Please insert the Room's number.",
+                icon: "error",
+            });
+            return;
+        }
+
+        fetch(`${API_BASE_URL}/Rooms/CreateRoom?roomNumber=${roomNumber}`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -30,6 +43,7 @@ const RoomsModal = ({ open, onClose }: any) => {
                         text: "Room successfully created!",
                         icon: "success",
                     });
+                    handleGetCourses();
                 }
                 })
                 .catch((error) => {

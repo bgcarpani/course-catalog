@@ -12,9 +12,9 @@ export default function DefFooter() {
       component="footer"
     >
       <Container maxWidth="sm">
-        <Typography variant="body2" color="text.secondary" align="center">
+        <Typography variant="body2" color="text.secondary" align="center" >
             {"courses catalog - .net API - react.js - typescript  - "}
-          <Link color="inherit" href="https://www.linkedin.com/in/bgcarpani/">
+          <Link color="inherit" href="https://www.linkedin.com/in/bgcarpani/" target="_blank">
             bgcarpani
           </Link>{" "}
           {new Date().getFullYear()}
