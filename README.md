@@ -6,7 +6,7 @@ React + TypeScript front-end for a Course Catalog
 - Professors and Rooms creating and reading.
 - Email sending.
 
-# Packages:
+# Libraries:
 - TypeScript.
 - Material UI.
 - sweetalert.
